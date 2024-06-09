@@ -1,5 +1,6 @@
 import express from "express";
 import { Singleton } from "./decorator";
+import { DatabaseConnector } from "./database/database-connector";
 
 @Singleton()
 export class BespokeApp {
@@ -12,7 +13,6 @@ export class BespokeApp {
       const routes = Reflect.getMetadata("routes", controller);
       const router = express.Router();
       routes.forEach((route: any) => {
-        console.log(controller);
         // @ts-ignore
         router[route.method](route.path, (req: Request, res: Response) => {
           // @ts-ignore
@@ -21,7 +21,14 @@ export class BespokeApp {
       });
 
       this.app.use(path, router);
+      this.app.get("/", (req, res) => {
+        res.send(`Hello World`);
+      });
     });
+  }
+  public addDatabase(database: DatabaseConnector): this {
+    database.connect().then(console.log).catch(console.error);
+    return this;
   }
   public start(port: number, callback?: () => void) {
     this.app.listen(port, callback);
