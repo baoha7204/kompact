@@ -21,9 +21,9 @@ export class BespokeApp {
       });
 
       this.app.use(path, router);
-      this.app.get("/", (req, res) => {
-        res.send(`Hello World`);
-      });
+    });
+    this.app.get("/", (_, res) => {
+      res.send(`Hello World`);
     });
   }
   public addDatabase(database: DatabaseConnector): this {
