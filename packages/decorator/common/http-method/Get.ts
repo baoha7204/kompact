@@ -1,4 +1,4 @@
-export function Get(path?: string): ReturnType<HttpMethodDecorator> {
+export function Get(path?: string) {
   return function (target: any, propertyKey: string) {
     if (!Reflect.hasMetadata("routes", target.constructor)) {
       Reflect.defineMetadata("routes", [], target.constructor);
