@@ -3,7 +3,7 @@ import { Singleton } from "./decorator";
 import { DatabaseConnector } from "./database/database-connector";
 
 @Singleton()
-export class BespokeApp {
+export class KompactApp {
   private app = express();
   constructor(private readonly controllers: any[]) {
     this.controllers.forEach((controller) => {
