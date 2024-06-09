@@ -6,8 +6,7 @@
   "keywords": ["express", "backend", "typescript"],
   "author": "tranquangsang12.7@gmail.com",
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SangTran-127/bespoke-js.git"
+    "url": "git://github.com/SangTran-127/bespoke-js.git"
   },
   "homepage": "https://sangtran.dev",
   "module": "./build/index.js",
