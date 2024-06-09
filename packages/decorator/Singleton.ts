@@ -1,0 +1,15 @@
+export function Singleton(config?: any) {
+  return function <T extends new (...args: any[]) => any>(target: T) {
+    let instance: T;
+    return class {
+      constructor(...args: any[]) {
+        if (instance) {
+          console.error(`Cannot re-create singleton instance`);
+          return instance;
+        }
+        instance = new target(...args);
+        return instance;
+      }
+    } as T;
+  };
+}
