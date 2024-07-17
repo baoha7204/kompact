@@ -2,7 +2,7 @@ import express, { NextFunction, Router } from "express";
 import { Redis } from "ioredis";
 import { DatabaseConnector } from "./database/database-connector";
 import { Singleton } from "./decorator";
-import { Request, Response } from "./interface";
+import { Request, Response, RouteMethod } from "./interface";
 
 @Singleton()
 export class KompactApp {
@@ -15,9 +15,9 @@ export class KompactApp {
     this.controllers.forEach((controller) => {
       const instance = new controller();
       const path: string = Reflect.getMetadata("path", controller);
-      const routes: string[] = Reflect.getMetadata("routes", controller);
+      const routes: RouteMethod[] = Reflect.getMetadata("routes", controller);
       const router = express.Router();
-      routes.forEach((route: any) => {
+      routes.forEach((route) => {
         // @ts-ignore
         router[route.method](route.path, (req: Request, res: Response) => {
           // @ts-ignore
