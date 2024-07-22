@@ -3,7 +3,9 @@ import { Redis } from "ioredis";
 import { DatabaseConnector } from "./database/database-connector";
 import { Singleton } from "./decorator";
 import { Request, Response, RouteMethod } from "./interface";
-
+import { logger } from "./logger";
+import { v4 as uuidv4 } from "uuid";
+import { HttpError } from "./error";
 @Singleton()
 export class KompactApp {
   private app = express();
@@ -43,6 +45,47 @@ export class KompactApp {
     this.middlewares.forEach((middleware) => {
       this.app.use(middleware);
     });
+
+    // logging
+    this.app.use((req, _, next) => {
+      const requestId = req.headers["x-request-id"];
+      req.requestId = requestId ? requestId : uuidv4();
+      logger.log(`Input params type ${req.method}`, {
+        context: req.path,
+        requestId: req.requestId,
+        metadata: req.method === "POST" ? req.body : req.query,
+      });
+      next();
+    });
+
+    // handling error
+    this.app.use((_, __, next) => {
+      const error = new HttpError("Not found", 404);
+      next(error);
+    });
+
+    this.app.use(
+      (error: HttpError, req: Request, res: Response, next: NextFunction) => {
+        // Add log for error
+        const errorMessage = `Error ${
+          error.status
+        } - ${Date.now()}ms - Response: ${JSON.stringify(error)}`;
+
+        logger.error(errorMessage, {
+          context: req.path,
+          requestId: req.requestId || uuidv4(),
+          metadata: { message: error.message },
+        });
+
+        res.status(error.status).json({
+          status: "error",
+          code: error.status,
+          stack: error.stack, // for development env
+          message: error.message || "Internal Server Error",
+        });
+      }
+    );
+    //
     this.router.forEach((router, path) => {
       this.app.use(path, router);
     });
