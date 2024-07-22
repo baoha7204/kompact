@@ -6,11 +6,14 @@ import { Request, Response, RouteMethod } from "./interface";
 import { logger } from "./logger";
 import { v4 as uuidv4 } from "uuid";
 import { HttpError } from "./error";
+import morgan from "morgan";
+import helmet from "helmet";
+import compression from "compression";
 @Singleton()
 export class KompactApp {
   private app = express();
   private router = new Map<string, Router>();
-  public middlewares: Array<
+  private middlewares: Array<
     (req: Request, res: Response, next: NextFunction) => void
   > = [];
   constructor(private readonly controllers: any[]) {
@@ -42,6 +45,11 @@ export class KompactApp {
   }
 
   public start(port: number, callback?: () => void) {
+    // init some utils middleware
+    this.app.use(express.json()); // json body parser
+    this.app.use(morgan("dev")); // morgan log
+    this.app.use(helmet()); // help secure Express apps by setting HTTP response headers.
+    this.app.use(compression()); // compress file
     this.middlewares.forEach((middleware) => {
       this.app.use(middleware);
     });
@@ -58,7 +66,11 @@ export class KompactApp {
       next();
     });
 
-    // handling error
+    this.router.forEach((router, path) => {
+      this.app.use(path, router);
+    });
+
+    // handling error, this middleware after a define routes
     this.app.use((_, __, next) => {
       const error = new HttpError("Not found", 404);
       next(error);
@@ -85,10 +97,6 @@ export class KompactApp {
         });
       }
     );
-    //
-    this.router.forEach((router, path) => {
-      this.app.use(path, router);
-    });
     this.app.listen(port, callback);
   }
   public middleware(

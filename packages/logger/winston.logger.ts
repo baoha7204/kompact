@@ -5,7 +5,6 @@ import {
   transports,
 } from "winston";
 import "winston-daily-rotate-file";
-import { v4 as uuidv4 } from "uuid";
 import { Singleton } from "../decorator";
 
 export type LogParams = {
@@ -30,7 +29,6 @@ class Logger {
         format.timestamp({ format: "DD-MM-YY HH:mm::ss" })
       ),
       transports: [
-        new transports.Console(),
         new transports.DailyRotateFile({
           dirname: "logs",
           filename: "application-%DATE%.log",
@@ -74,7 +72,7 @@ class Logger {
     const paramLog = this.formatParams(params);
     const logObject = {
       message,
-      paramLog,
+      ...paramLog,
     };
     this.logger.info(logObject);
   }
@@ -82,7 +80,7 @@ class Logger {
     const paramLog = this.formatParams(params);
     const logObject = {
       message,
-      paramLog,
+      ...paramLog,
     };
     this.logger.error(logObject);
   }
