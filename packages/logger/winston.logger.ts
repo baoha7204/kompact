@@ -3,60 +3,60 @@ import {
   format,
   type Logger as WinstonLogger,
   transports,
-} from "winston";
-import "winston-daily-rotate-file";
-import { Singleton } from "../decorator";
+} from 'winston'
+import 'winston-daily-rotate-file'
+import { Singleton } from '../decorator'
 
 export type LogParams = {
-  context: string;
-  requestId: string | string[];
-  metadata: any;
-};
+  context: string
+  requestId: string | string[]
+  metadata: any
+}
 @Singleton()
 class Logger {
-  private logger: WinstonLogger;
+  private logger: WinstonLogger
   constructor() {
     const formatPrint = format.printf(
       ({ level, message, context, requestId, timestamp, metadata }) => {
         return `${timestamp}::${level}::${context}::${requestId}::${message}::${JSON.stringify(
-          metadata
-        )}`;
-      }
-    );
+          metadata,
+        )}`
+      },
+    )
     this.logger = createLogger({
-      level: "debug",
+      level: 'debug',
       format: format.combine(
-        format.timestamp({ format: "DD-MM-YY HH:mm::ss" })
+        format.timestamp({ format: 'DD-MM-YY HH:mm::ss' }),
       ),
       transports: [
         new transports.DailyRotateFile({
-          dirname: "logs",
-          filename: "application-%DATE%.log",
-          datePattern: "HH-DD-MM-YYYY",
+          dirname: 'logs',
+          filename: 'application-%DATE%.log',
+          datePattern: 'HH-DD-MM-YYYY',
           zippedArchive: true,
-          maxSize: "14m",
-          maxFiles: "14d",
+          maxSize: '14m',
+          maxFiles: '14d',
           format: format.combine(
-            format.timestamp({ format: "DD-MM-YY HH:mm::ss" }),
-            formatPrint
+            format.timestamp({ format: 'DD-MM-YY HH:mm::ss' }),
+            formatPrint,
           ),
-          level: "info",
+          level: 'info',
         }),
         new transports.DailyRotateFile({
-          dirname: "logs",
-          filename: "application-%DATE%.error.log",
-          datePattern: "HH-DD-MM-YYYY",
+          dirname: 'logs',
+          filename: 'application-%DATE%.error.log',
+          datePattern: 'HH-DD-MM-YYYY',
           zippedArchive: true,
-          maxSize: "14m",
-          maxFiles: "14d",
+          maxSize: '14m',
+          maxFiles: '14d',
           format: format.combine(
-            format.timestamp({ format: "DD-MM-YY HH:mm::ss" }),
-            formatPrint
+            format.timestamp({ format: 'DD-MM-YY HH:mm::ss' }),
+            formatPrint,
           ),
-          level: "error",
+          level: 'error',
         }),
       ],
-    });
+    })
   }
 
   private formatParams({ requestId, context, metadata }: LogParams) {
@@ -65,24 +65,24 @@ class Logger {
       requestId,
       context,
       metadata,
-    };
+    }
   }
 
   log(message: string, params: LogParams) {
-    const paramLog = this.formatParams(params);
+    const paramLog = this.formatParams(params)
     const logObject = {
       message,
       ...paramLog,
-    };
-    this.logger.info(logObject);
+    }
+    this.logger.info(logObject)
   }
   error(message: string, params: LogParams) {
-    const paramLog = this.formatParams(params);
+    const paramLog = this.formatParams(params)
     const logObject = {
       message,
       ...paramLog,
-    };
-    this.logger.error(logObject);
+    }
+    this.logger.error(logObject)
   }
 }
-export const logger = new Logger();
+export const logger = new Logger()

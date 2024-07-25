@@ -1,5 +1,5 @@
-import "reflect-metadata";
-export * from "./decorator";
-export * from "./app";
-export * from "./interface";
-export * from "./database";
+import 'reflect-metadata'
+export * from './decorator'
+export * from './app'
+export * from './interface'
+export * from './database'

@@ -31,7 +31,9 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "scripts": {
-    "build": "rm -rf ./build && tsc"
+    "build": "rm -rf ./build && tsc",
+    "lint": "eslint --ext .js,.ts",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
   },
   "files": [
     "build/"
@@ -42,7 +44,17 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/morgan": "^1.9.9",
     "@types/pg": "^8.11.6",
-    "@types/uuid": "^10.0.0"
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^7.17.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-promise": "^6.0.0",
+    "prettier": "^3.3.3",
+    "typescript": "*"
   },
   "peerDependencies": {
     "express": "^4.19.2"

@@ -1,1 +1,1 @@
-export * from "./mongoose-client";
+export * from './mongoose-client'

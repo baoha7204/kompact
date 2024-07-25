@@ -1,2 +1,2 @@
-export * from "./Controller";
-export * from "./http-method";
+export * from './Controller'
+export * from './http-method'

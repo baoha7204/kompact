@@ -1,19 +1,19 @@
-import { RouteMethod } from "../../../interface";
+import { type RouteMethod } from '../../../interface'
 
 export function Get(path?: string) {
-  return function (target: any, propertyKey: string) {
+  return function (target: object, propertyKey: string) {
     // target is {}, target.constructor to get its class
-    if (!Reflect.hasMetadata("routes", target.constructor)) {
-      Reflect.defineMetadata("routes", [], target.constructor);
+    if (!Reflect.hasMetadata('routes', target.constructor)) {
+      Reflect.defineMetadata('routes', [], target.constructor)
     }
     const routes: RouteMethod[] = Reflect.getMetadata(
-      "routes",
-      target.constructor
-    );
+      'routes',
+      target.constructor,
+    )
     routes.push({
-      method: "get",
-      path: path || "",
-      action: target[propertyKey],
-    });
-  };
+      method: 'get',
+      path: path ?? '',
+      action: target[propertyKey as keyof typeof target],
+    })
+  }
 }

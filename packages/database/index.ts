@@ -1,2 +1,2 @@
-export * from "./client";
-export * from "./database-connector";
+export * from './client'
+export * from './database-connector'
