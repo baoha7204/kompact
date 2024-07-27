@@ -53,11 +53,11 @@ import {
   Response,
 } from "@sangtrandev/kompact";
 
-@Controller({ path: "cat" })
+@Controller("cat")
 export class CatController {
   @Get()
   getCat(req: Request, res: Response) {
-    res.send(`hello, I sent you a cat`);
+    res.send("hello, I sent you a cat");
   }
 
   @Auth
