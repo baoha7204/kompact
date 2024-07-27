@@ -79,7 +79,6 @@ const app = new KompactApp({
   authenticator: (req, res, next) => {
     // const accessToken = req.headers["authorization"];
     // if (!accessToken) res.status(401);
-    //@ts-ignore
     req.user = {
       name: "Sang tran",
     };
