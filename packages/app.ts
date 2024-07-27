@@ -1,5 +1,5 @@
-import express, { type NextFunction, type Router } from 'express'
 import compression from 'compression'
+import express, { type NextFunction, type Router } from 'express'
 import helmet from 'helmet'
 import { type Redis } from 'ioredis'
 import morgan from 'morgan'

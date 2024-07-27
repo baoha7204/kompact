@@ -10,7 +10,7 @@ export type CreateTokenPairValidOptions = {
   refreshTokenExpiresIn: string | number
 }
 
-class AuthUtils {
+export class AuthUtils {
   static generateKeyPair(): KeyPair {
     const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
       modulusLength: 4096,

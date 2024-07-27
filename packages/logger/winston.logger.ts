@@ -14,7 +14,8 @@ export type LogParams = {
 }
 @Singleton()
 class Logger {
-  private logger: WinstonLogger
+  private readonly logger: WinstonLogger
+
   constructor() {
     const formatPrint = format.printf(
       ({ level, message, context, requestId, timestamp, metadata }) => {
@@ -59,7 +60,7 @@ class Logger {
     })
   }
 
-  private formatParams({ requestId, context, metadata }: LogParams) {
+  private formatParams({ requestId, context, metadata }: LogParams): any {
     // will be handle custom for the future
     return {
       requestId,
@@ -68,7 +69,7 @@ class Logger {
     }
   }
 
-  log(message: string, params: LogParams) {
+  log(message: string, params: LogParams): void {
     const paramLog = this.formatParams(params)
     const logObject = {
       message,
@@ -76,7 +77,8 @@ class Logger {
     }
     this.logger.info(logObject)
   }
-  error(message: string, params: LogParams) {
+
+  error(message: string, params: LogParams): void {
     const paramLog = this.formatParams(params)
     const logObject = {
       message,
