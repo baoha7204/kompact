@@ -7,7 +7,7 @@ export function Controller(options: {
 export function Controller(
   arg: string | { path: string; auth?: boolean },
 ): ClassDecorator {
-  return function (target: object) {
+  return (target: object) => {
     if (typeof arg === 'string') {
       Reflect.defineMetadata('path', `/${arg}`, target)
     } else {

@@ -7,4 +7,11 @@ export type RouteMethod = {
   method: 'get' | 'post' | 'put' | 'patch'
   path: string
   action: FunctionConstructor
+  auth?: boolean
+}
+
+export type AuthMethod = {
+  controller: string
+  method: string
+  auth: boolean
 }

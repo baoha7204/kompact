@@ -7,10 +7,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { type DatabaseConnector } from './database/database-connector'
 import { Singleton } from './decorator'
 import { HttpError } from './error'
-import type { Middleware, Request, Response, RouteMethod } from './interface'
+import type {
+  Class,
+  Middleware,
+  Request,
+  Response,
+  RouteMethod,
+} from './interface'
 import { logger } from './logger'
-
-type Class = new (...args: any[]) => any
 
 @Singleton()
 export class KompactApp {
@@ -32,7 +36,8 @@ export class KompactApp {
       const routes: RouteMethod[] = Reflect.getMetadata('routes', Controller)
       const auth: boolean | undefined = Reflect.getMetadata('auth', Controller)
       const router = express.Router()
-
+      const authMethod = Reflect.getMetadata('auth-method', Controller)
+      console.log(`authMethod:: `, authMethod)
       if (auth) {
         if (!authenticator) {
           // TODO: will custom this problem later
@@ -43,10 +48,19 @@ export class KompactApp {
         router.use(authenticator)
       }
       routes.forEach(route => {
-        console.log(`route:: `, route)
-        router[route.method](route.path, (req: Request, res: Response) => {
-          instance[route.action.name](req, res)
-        })
+        if (route.auth && authenticator) {
+          router[route.method](
+            route.path,
+            authenticator,
+            (req: Request, res: Response) => {
+              instance[route.action.name](req, res)
+            },
+          )
+        } else {
+          router[route.method](route.path, (req: Request, res: Response) => {
+            instance[route.action.name](req, res)
+          })
+        }
       })
       this.router.set(path, router)
     })
@@ -56,11 +70,13 @@ export class KompactApp {
   }
 
   public addRedis(redisClient: Redis): this {
+    // will do with logger later
     redisClient.connect().catch(console.error)
     return this
   }
 
   public addDatabase(database: DatabaseConnector): this {
+    // will do with logger later
     database.connect().then(console.log).catch(console.error)
     return this
   }

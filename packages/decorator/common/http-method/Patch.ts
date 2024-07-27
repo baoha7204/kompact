@@ -1,5 +1,5 @@
 export function Patch(path?: string) {
-  return function (target: object, propertyKey: string) {
+  return (target: object, propertyKey: string) => {
     if (!Reflect.hasMetadata('routes', target.constructor)) {
       Reflect.defineMetadata('routes', [], target.constructor)
     }

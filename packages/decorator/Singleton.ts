@@ -1,6 +1,6 @@
 // will be disable single later
 export function Singleton() {
-  return function <T extends new (...args: any[]) => any>(target: T) {
+  return <T extends new (...args: any[]) => any>(target: T) => {
     let instance: T
     return class {
       constructor(...args: any[]) {

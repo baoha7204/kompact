@@ -1,7 +1,7 @@
 import { type RouteMethod } from '../../../interface'
 
 export function Get(path?: string) {
-  return function (target: object, propertyKey: string) {
+  return (target: object, propertyKey: string) => {
     // target is {}, target.constructor to get its class
     if (!Reflect.hasMetadata('routes', target.constructor)) {
       Reflect.defineMetadata('routes', [], target.constructor)
