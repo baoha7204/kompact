@@ -14,7 +14,7 @@ Kompact is a TypeScript backend library for Express that leverages metadata prog
 You can install Kompact via npm:
 
 ```bash
-npm install kompact
+npm install @sangtrandev/kompact
 ```
 
 ## Usage
