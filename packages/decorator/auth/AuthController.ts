@@ -1,5 +1,5 @@
-// export function AuthController() {
-//   return (target: any) => {
-//     Reflect.defineMetadata('auth', null, target)
-//   }
-// }
+export function AuthController() {
+  return (target: object) => {
+    Reflect.defineMetadata('auth', true, target)
+  }
+}

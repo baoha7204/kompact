@@ -1,5 +1,5 @@
-import compression from 'compression'
 import express, { type NextFunction, type Router } from 'express'
+import compression from 'compression'
 import helmet from 'helmet'
 import { type Redis } from 'ioredis'
 import morgan from 'morgan'
@@ -11,6 +11,7 @@ import type { Middleware, Request, Response, RouteMethod } from './interface'
 import { logger } from './logger'
 
 type Class = new (...args: any[]) => any
+
 @Singleton()
 export class KompactApp {
   private readonly app = express()
@@ -34,6 +35,7 @@ export class KompactApp {
 
       if (auth) {
         if (!authenticator) {
+          // TODO: will custom this problem later
           throw new Error(
             `Please provide the authenticator, ${path} are current required authentication`,
           )
@@ -66,6 +68,7 @@ export class KompactApp {
   public start(port: number, callback?: () => void): void {
     // init some utils middleware
     this.app.use(express.json()) // json body parser
+    // will be custom these param, don't hard code anymore
     this.app.use(morgan('dev')) // morgan log
     this.app.use(helmet()) // help secure Express apps by setting HTTP response headers.
     this.app.use(compression()) // compress file
