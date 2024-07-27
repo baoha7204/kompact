@@ -19,7 +19,7 @@ export enum StatusCode {
   GATEWAY_TIMEOUT = 504,
 }
 
-export const ReasonStatusCode: { [key in StatusCode]?: string } = {
+export const ReasonStatusCode: { [key in StatusCode]: string } = {
   [StatusCode.OK]: 'OK',
   [StatusCode.CREATED]: 'Created',
   [StatusCode.ACCEPTED]: 'Accepted',
