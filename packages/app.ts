@@ -4,7 +4,7 @@ import helmet from 'helmet'
 import { type Redis } from 'ioredis'
 import morgan from 'morgan'
 import { v4 as uuidv4 } from 'uuid'
-import { type DatabaseConnector } from './database/database-connector'
+// import { type DatabaseConnector } from './database/database-connector'
 import { Singleton } from './decorator'
 import { HttpError } from './error'
 import type {
@@ -74,12 +74,12 @@ export class KompactApp {
     redisClient.connect().catch(console.error)
     return this
   }
-
-  public addDatabase(database: DatabaseConnector): this {
-    // will do with logger later
-    database.connect().then(console.log).catch(console.error)
-    return this
-  }
+  // using prisma for now
+  // public addDatabase(database: DatabaseConnector): this {
+  //   // will do with logger later
+  //   database.connect().then(console.log).catch(console.error)
+  //   return this
+  // }
 
   public start(port: number, callback?: () => void): void {
     // init some utils middleware
