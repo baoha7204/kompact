@@ -1,1 +1,1 @@
-export * from './type-utils'
+export * from './class-dto-utils'

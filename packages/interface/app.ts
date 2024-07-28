@@ -5,4 +5,4 @@ export type Response = express.Response
 export type NextFunction = express.NextFunction
 export type Next = express.NextFunction
 export type Middleware = (req: Request, res: Response, next: Next) => void
-export type Class = new (...args: any[]) => any
+export type Class<T = any> = new (...args: any[]) => T
