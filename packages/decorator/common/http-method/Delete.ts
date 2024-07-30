@@ -1,8 +1,9 @@
 import { HttpMethod, ROUTES_METHOD_METADATA } from '.'
-import type { RouteMethod } from '../../../interface'
+import { type RouteMethod } from '../../../interface'
 
-export function Put(path?: string) {
-  return (target: object, propertyKey: string) => {
+export function Delete(path?: string) {
+  return (target: object, propertyKey: string | symbol) => {
+    // target is {}, target.constructor to get its class
     if (!Reflect.hasMetadata(ROUTES_METHOD_METADATA, target.constructor)) {
       Reflect.defineMetadata(ROUTES_METHOD_METADATA, [], target.constructor)
     }
@@ -11,7 +12,7 @@ export function Put(path?: string) {
       target.constructor,
     )
     routes.push({
-      method: HttpMethod.Put,
+      method: HttpMethod.Delete,
       path: path ?? '',
       methodName: propertyKey,
       action: target[propertyKey as keyof typeof target],

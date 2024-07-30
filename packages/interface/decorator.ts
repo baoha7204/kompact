@@ -4,10 +4,11 @@ export type HttpMethodDecorator = (
 ) => (target: any, propertyKey: string) => void
 
 export type RouteMethod = {
-  method: 'get' | 'post' | 'put' | 'patch'
+  method: 'get' | 'post' | 'put' | 'patch' | 'delete'
   path: string
   action: FunctionConstructor
   auth?: boolean
+  methodName: string | symbol
 }
 
 export type AuthMethod = {

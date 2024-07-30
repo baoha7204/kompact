@@ -5,7 +5,7 @@ import { type Redis } from 'ioredis'
 import morgan from 'morgan'
 import { v4 as uuidv4 } from 'uuid'
 // import { type DatabaseConnector } from './database/database-connector'
-import { Singleton } from './decorator'
+import { PARAM_KEY, Singleton } from './decorator'
 import { HttpError } from './error'
 import type {
   Class,
@@ -59,6 +59,12 @@ export class KompactApp {
         } else {
           router[route.method](route.path, (req: Request, res: Response) => {
             instance[route.action.name](req, res)
+            const prototype: object = Object.getPrototypeOf(instance)
+            const paramMetadata =
+              Reflect.getOwnMetadata(PARAM_KEY, prototype, 'getDogById') || []
+
+            console.log(`paramMetadata:: `, paramMetadata)
+            // console.log(`instance:: `, instance)
           })
         }
       })

@@ -1,3 +1,5 @@
+import { CONTROLLER_AUTH_METADATA, CONTROLLER_PATH_METADATA } from '.'
+
 export function Controller(path: string): ClassDecorator
 export function Controller(options: {
   path: string
@@ -9,11 +11,11 @@ export function Controller(
 ): ClassDecorator {
   return (target: object) => {
     if (typeof arg === 'string') {
-      Reflect.defineMetadata('path', `/${arg}`, target)
+      Reflect.defineMetadata(CONTROLLER_PATH_METADATA, `/${arg}`, target)
     } else {
-      Reflect.defineMetadata('path', `/${arg.path}`, target)
+      Reflect.defineMetadata(CONTROLLER_PATH_METADATA, `/${arg.path}`, target)
       if (arg.auth) {
-        Reflect.defineMetadata('auth', arg.auth, target)
+        Reflect.defineMetadata(CONTROLLER_AUTH_METADATA, arg.auth, target)
       }
     }
   }
