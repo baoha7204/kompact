@@ -21,6 +21,7 @@ import type {
   RouteMethod,
 } from './interface'
 import { logger } from './logger'
+import { extractReqParams } from './utils/extract-controller-param'
 
 @Singleton()
 export class KompactApp {
@@ -51,8 +52,6 @@ export class KompactApp {
         Controller,
       )
       const router = express.Router()
-      const authMethod = Reflect.getMetadata('auth-method', Controller)
-      console.log(`authMethod:: `, authMethod)
       if (auth) {
         if (!authenticator) {
           // TODO: will custom this problem later
@@ -68,26 +67,14 @@ export class KompactApp {
             route.path,
             authenticator,
             (req: Request, res: Response) => {
-              instance[route.action.name](req, res)
+              extractReqParams(instance, route, req, res)
             },
           )
         } else {
           router[route.method](
             route.path,
             (req: Request, res: Response, next: NextFunction) => {
-              const prototype: object = Object.getPrototypeOf(instance)
-              const paramMetadata = Reflect.getMetadata(
-                PARAM_KEY,
-                prototype,
-                route.methodName,
-              )
-              const args: any[] = []
-              paramMetadata.forEach(
-                ({ index, name }: { index: number; name: string }) => {
-                  args[index] = req.params[name]
-                },
-              )
-              instance[route.action.name](...args, res)
+              extractReqParams(instance, route, req, res)
             },
           )
         }
