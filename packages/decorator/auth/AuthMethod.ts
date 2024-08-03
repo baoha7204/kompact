@@ -1,4 +1,5 @@
 import type { RouteMethod } from '../../interface'
+import { ROUTES_METHOD_METADATA } from '../common'
 
 export function Auth(
   target: object,
@@ -22,11 +23,11 @@ export function Auth(
   }
   // TODO: apply no duplicate decorator, and not GET POST PUT,... in the same method
   const routesMethod: RouteMethod[] = Reflect.getMetadata(
-    'routes',
+    ROUTES_METHOD_METADATA,
     target.constructor,
   )
   Reflect.defineMetadata(
-    'routes',
+    ROUTES_METHOD_METADATA,
     routesMethod.map(route => ({ ...route, auth: true })),
     target.constructor,
   )

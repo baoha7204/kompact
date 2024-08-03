@@ -5,7 +5,13 @@ import { type Redis } from 'ioredis'
 import morgan from 'morgan'
 import { v4 as uuidv4 } from 'uuid'
 // import { type DatabaseConnector } from './database/database-connector'
-import { PARAM_KEY, Singleton } from './decorator'
+import {
+  CONTROLLER_AUTH_METADATA,
+  CONTROLLER_PATH_METADATA,
+  PARAM_KEY,
+  ROUTES_METHOD_METADATA,
+  Singleton,
+} from './decorator'
 import { HttpError } from './error'
 import type {
   Class,
@@ -32,9 +38,18 @@ export class KompactApp {
   }) {
     controllers.forEach(Controller => {
       const instance = new Controller()
-      const path: string = Reflect.getMetadata('path', Controller)
-      const routes: RouteMethod[] = Reflect.getMetadata('routes', Controller)
-      const auth: boolean | undefined = Reflect.getMetadata('auth', Controller)
+      const path: string = Reflect.getMetadata(
+        CONTROLLER_PATH_METADATA,
+        Controller,
+      )
+      const routes: RouteMethod[] = Reflect.getMetadata(
+        ROUTES_METHOD_METADATA,
+        Controller,
+      )
+      const auth: boolean | undefined = Reflect.getMetadata(
+        CONTROLLER_AUTH_METADATA,
+        Controller,
+      )
       const router = express.Router()
       const authMethod = Reflect.getMetadata('auth-method', Controller)
       console.log(`authMethod:: `, authMethod)
@@ -57,15 +72,24 @@ export class KompactApp {
             },
           )
         } else {
-          router[route.method](route.path, (req: Request, res: Response) => {
-            instance[route.action.name](req, res)
-            const prototype: object = Object.getPrototypeOf(instance)
-            const paramMetadata =
-              Reflect.getOwnMetadata(PARAM_KEY, prototype, 'getDogById') || []
-
-            console.log(`paramMetadata:: `, paramMetadata)
-            // console.log(`instance:: `, instance)
-          })
+          router[route.method](
+            route.path,
+            (req: Request, res: Response, next: NextFunction) => {
+              const prototype: object = Object.getPrototypeOf(instance)
+              const paramMetadata = Reflect.getMetadata(
+                PARAM_KEY,
+                prototype,
+                route.methodName,
+              )
+              const args: any[] = []
+              paramMetadata.forEach(
+                ({ index, name }: { index: number; name: string }) => {
+                  args[index] = req.params[name]
+                },
+              )
+              instance[route.action.name](...args, res)
+            },
+          )
         }
       })
       this.router.set(path, router)
