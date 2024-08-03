@@ -1,4 +1,5 @@
 import { PARAM_KEY } from '../decorator'
+import { BODY_KEY } from '../decorator/common/Body'
 import { Request, Response, RouteMethod } from '../interface'
 
 export const extractReqParams = (
@@ -8,15 +9,24 @@ export const extractReqParams = (
   res: Response,
 ) => {
   const prototype: object = Object.getPrototypeOf(instanceController)
+  const args: any[] = []
   const paramMetadata = Reflect.getMetadata(
     PARAM_KEY,
     prototype,
     route.methodName,
   )
-  const args: any[] = []
+  const bodyMetadata = Reflect.getMetadata(
+    BODY_KEY,
+    prototype,
+    route.methodName,
+  )
   paramMetadata.forEach(({ index, name }: { index: number; name: string }) => {
     // incase if name is undefined = @Param() params: object
     args[index] = req.params[name] || req.params
+  })
+  bodyMetadata.forEach(({ index, field }: { index: number; field: string }) => {
+    // incase if name is undefined = @Body() body: object
+    args[index] = req.body[field] || req.body
   })
   instanceController[route.action.name](...args, res)
 }

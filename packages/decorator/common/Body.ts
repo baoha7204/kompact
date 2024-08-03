@@ -1,19 +1,15 @@
-// import { Request, RequestHandler, Response } from 'express'
+export const BODY_KEY = Symbol('BODY')
 
-// export function Body(): RequestHandler {
-//   return (req: Request, _: Response, next) => {
-//     Reflect.defineMetadata('body', req.body, req)
-//     next()
-//   }
-// }
-
-// export function GetBody(
-//   target: any,
-//   propertyKey: string,
-//   parameterIndex: number,
-// ) {
-//   const existingParameters: number[] =
-//     Reflect.getOwnMetadata('body', target, propertyKey) || []
-//   existingParameters.push(parameterIndex)
-//   Reflect.defineMetadata('body', existingParameters, target, propertyKey)
-// }
+export function Body(fieldName?: string) {
+  return (
+    target: object,
+    propertyKey: string | symbol,
+    indexParameter: number,
+  ) => {
+    if (Reflect.hasMetadata(BODY_KEY, target, propertyKey)) {
+      Reflect.defineMetadata(BODY_KEY, [], target, propertyKey)
+    }
+    const bodies = Reflect.getMetadata(BODY_KEY, target, propertyKey)
+    bodies.push({ index: indexParameter, field: fieldName })
+  }
+}
